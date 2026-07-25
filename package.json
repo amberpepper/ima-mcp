@@ -1,0 +1,33 @@
+{
+  "name": "ima-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Tencent IMA OpenAPI notes and knowledge base operations",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "ima-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.3",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "mcp",
+    "ima",
+    "notes",
+    "knowledge-base"
+  ],
+  "private": false,
+  "files": [
+    "dist/",
+    "README.md"
+  ]
+}
