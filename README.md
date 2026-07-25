@@ -2,7 +2,7 @@
 
 MCP server for Tencent IMA OpenAPI (notes & knowledge base).
 
-**基于官方 [ima-skill](https://github.com) 移植为独立 MCP Server**（将 skill 能力封装为 MCP tools，便于在 MCP 客户端中调用）。
+**基于官方 [IMA Skill / Agent 接口](https://ima.qq.com/agent-interface) 移植为独立 MCP Server**（将 skill 能力封装为 MCP tools，便于在 MCP 客户端中调用）。
 
 ## Credentials
 
