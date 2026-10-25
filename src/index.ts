@@ -7,13 +7,13 @@ import {
   ListToolsRequestSchema,
   McpError,
 } from "@modelcontextprotocol/sdk/types.js";
-import { ImaClientError } from "./ima-client";
-import { tools } from "./tools";
+import { ImaClientError } from "./ima-client.js";
+import { tools } from "./tools.js";
 
 const server = new Server(
   {
     name: "ima-mcp",
-    version: "0.1.0",
+    version: "1.1.0",
   },
   {
     capabilities: {

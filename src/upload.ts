@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import https from "node:https";
 import path from "node:path";
-import { assertImaOk, callImaApi } from "./ima-client";
+import { assertImaOk, callImaApi } from "./ima-client.js";
 
 const MB = 1024 * 1024;
 const DEFAULT_SIZE_LIMIT = 200 * MB;
@@ -12,6 +12,8 @@ const SIZE_LIMITS: Record<number, number> = {
   9: 30 * MB,
   13: 10 * MB,
   14: 10 * MB,
+  20: 10 * MB,
+  21: 50 * MB,
 };
 
 const EXT_MAP: Record<string, { mediaType: number; contentType: string }> = {
@@ -40,6 +42,9 @@ const EXT_MAP: Record<string, { mediaType: number; contentType: string }> = {
   webp: { mediaType: 9, contentType: "image/webp" },
   txt: { mediaType: 13, contentType: "text/plain" },
   xmind: { mediaType: 14, contentType: "application/x-xmind" },
+  html: { mediaType: 20, contentType: "text/html" },
+  htm: { mediaType: 20, contentType: "text/html" },
+  epub: { mediaType: 21, contentType: "application/epub+zip" },
   mp3: { mediaType: 15, contentType: "audio/mpeg" },
   m4a: { mediaType: 15, contentType: "audio/x-m4a" },
   wav: { mediaType: 15, contentType: "audio/wav" },

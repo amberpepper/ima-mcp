@@ -1,5 +1,6 @@
-import { assertImaOk, callImaApi, ImaClientError } from "./ima-client";
-import { uploadFileToKnowledge } from "./upload";
+import { assertImaOk, callImaApi, ImaClientError } from "./ima-client.js";
+import { getImageUrl, insertImagesToNote } from "./note-images.js";
+import { uploadFileToKnowledge } from "./upload.js";
 
 interface ToolDefinition {
   name: string;
@@ -211,6 +212,43 @@ export const tools: ToolDefinition[] = [
     },
   },
   {
+    name: "ima_insert_images_to_note",
+    description:
+      "向 IMA 笔记末尾追加 Markdown 内容，并自动把内容里引用的图片（本地路径、file://、http(s) URL 或 data URL）内嵌进笔记。" +
+      "图片仅支持 PNG/JPEG/WebP 且必须严格小于 3MiB；连续文本合并为一批，每张图片单独一批，按原顺序逐批追加，失败即停。dry_run 可预览分批。",
+    inputSchema: objectSchema(
+      {
+        note_id: stringSchema,
+        content: stringSchema,
+        file_path: stringSchema,
+        dry_run: { ...booleanSchema, default: false },
+      },
+      ["note_id"],
+    ),
+    async handler(args) {
+      return await insertImagesToNote({
+        noteId: requireString(args, "note_id"),
+        content: optionalString(args, "content"),
+        filePath: optionalString(args, "file_path"),
+        dryRun: optionalBoolean(args, "dry_run", false),
+      });
+    },
+  },
+  {
+    name: "ima_get_image_url",
+    description:
+      "把本地图片（PNG/JPEG/WebP，严格小于 3MiB）上传为 IMA 临时文件，返回可访问的临时 download_url。",
+    inputSchema: objectSchema(
+      {
+        image_path: stringSchema,
+      },
+      ["image_path"],
+    ),
+    async handler(args) {
+      return await getImageUrl({ imagePath: requireString(args, "image_path") });
+    },
+  },
+  {
     name: "ima_search_knowledge_bases",
     description: "搜索或列出 IMA 知识库。query 为空时按接口返回默认列表。",
     inputSchema: objectSchema({
@@ -317,7 +355,8 @@ export const tools: ToolDefinition[] = [
   },
   {
     name: "ima_import_urls",
-    description: "将网页或微信公众号文章 URL 导入 IMA 知识库。",
+    description:
+      "将网页或微信公众号文章 URL 导入 IMA 知识库。不传 folder_id 时导入到知识库根目录（接口要求 folder_id 必填，根目录传 knowledge_base_id）。",
     inputSchema: objectSchema(
       {
         knowledge_base_id: stringSchema,
@@ -332,17 +371,13 @@ export const tools: ToolDefinition[] = [
       ["knowledge_base_id", "urls"],
     ),
     async handler(args) {
+      const knowledgeBaseId = requireString(args, "knowledge_base_id");
       return cleanResponse(
-        await callImaApi(
-          "openapi/wiki/v1/import_urls",
-          bodyWithOptionalFolder(
-            {
-              knowledge_base_id: requireString(args, "knowledge_base_id"),
-              urls: optionalStringArray(args, "urls"),
-            },
-            args,
-          ),
-        ),
+        await callImaApi("openapi/wiki/v1/import_urls", {
+          knowledge_base_id: knowledgeBaseId,
+          folder_id: optionalString(args, "folder_id") ?? knowledgeBaseId,
+          urls: optionalStringArray(args, "urls"),
+        }),
       );
     },
   },

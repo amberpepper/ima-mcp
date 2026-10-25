@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 
 const DEFAULT_BASE_URL = "https://ima.qq.com";
-const SERVER_VERSION = "0.1.0";
+const SERVER_VERSION = "1.1.0";
 
 export interface ImaResponse<T = unknown> {
   code?: number;
